@@ -1,4 +1,5 @@
 import React from "react";
+import { useTheme } from "../context/ThemeContext";
 
 interface AndStepProps {
   value: string;
@@ -17,23 +18,25 @@ const AndStep: React.FC<AndStepProps> = ({
   onAdd,
   onRemove,
 }) => {
+  const { darkMode } = useTheme();
+
   return (
     <div className="flex flex-row gap-2 items-center ml-4">
-      <span className="step-type">And: </span>
+      <span className={`step-type ${darkMode ? 'text-purple-400' : 'text-gray-600'}`}>And: </span>
       <div className="flex-grow">
         <input
           type="text"
           value={value}
           onChange={(e) => onChange(index, e.target.value)}
           placeholder="Enter additional step text here..."
-          className="border border-gray-300 focus:border-2 focus:border-gray-500 rounded px-2 py-1 w-full"
+          className={`border ${darkMode ? 'border-gray-600 bg-gray-700 focus:border-blue-400 placeholder-gray-400' : 'border-gray-300 bg-white focus:border-gray-500'} rounded px-2 py-1 w-full transition-colors duration-200`}
         />
       </div>
       <div className="flex items-center">
         {canAddMore && (
           <button
             onClick={() => onAdd(index)}
-            className="text-gray-500 hover:text-gray-700 ml-2"
+            className={`${darkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-700'} ml-2 transition-colors duration-200`}
             title="Add And clause below"
           >
             <svg
@@ -55,7 +58,7 @@ const AndStep: React.FC<AndStepProps> = ({
 
         <button
           onClick={() => onRemove(index)}
-          className="text-gray-500 hover:text-gray-700 ml-2"
+          className={`${darkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-700'} ml-2 transition-colors duration-200`}
           title="Remove And clause"
         >
           <svg

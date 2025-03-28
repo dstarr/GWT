@@ -1,5 +1,6 @@
 import React from "react";
 import Step from "./Step";
+import { useTheme } from "../context/ThemeContext";
 
 interface ScenarioProps {
   index: number;
@@ -12,14 +13,16 @@ const Scenario: React.FC<ScenarioProps> = ({
   onRemove,
   isRemovable = true 
 }) => {
+  const { darkMode } = useTheme();
+
   return (
-    <div className="flex flex-col gap-4 p-4 border border-gray-200 rounded-lg">
-      <div className="flex flex-row justify-between items-center w-full">
+    <div className={`border ${darkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'} rounded-lg p-4 transition-colors duration-200`}>
+      <div className="flex flex-row justify-between items-center mb-4">
         <h3 className="text-lg font-semibold">Scenario {index + 1}</h3>
         {isRemovable && (
           <button
             onClick={() => onRemove(index)}
-            className="text-gray-500 hover:text-gray-700"
+            className={`${darkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-700'} transition-colors duration-200`}
             title="Remove scenario"
           >
             <svg

@@ -1,14 +1,27 @@
-import Feature from "../compontents/Feature";
+import Feature from "./components/Feature";
+import ThemeToggle from "./components/ThemeToggle";
+import { ThemeProvider, useTheme } from "./context/ThemeContext";
 
-function App() {
+const AppContent = () => {
+  const { darkMode } = useTheme();
+  
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex flex-col gap-4 justify-center items-center">
-        <div className="w-full py-4">
-          <Feature title="Feature Specification"/>
+    <div className={`min-h-screen transition-colors duration-200 ${darkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900"}`}>
+      <div className="container mx-auto p-4">
+        <div className="flex justify-between items-center mb-4">
+          <ThemeToggle />
         </div>
+        <Feature />
       </div>
     </div>
+  );
+};
+
+const App = () => {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
 
