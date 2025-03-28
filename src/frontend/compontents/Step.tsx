@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AdditionalStep from "./AdditionalStep";
+import AndStep from "./AndStep";
 
 type StepType = "Given" | "When" | "Then";
 
@@ -41,14 +41,14 @@ const Step: React.FC<StepProps> = ({ type }) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-row gap-2 items-center">
+      <div className="flex flex-row gap-2 items-center w-full">
         <span className="step-type">{type}: </span>
         <input
           type="text"
           value={text}
           onChange={handleChange}
           placeholder="Enter text here..."
-          className="border border-gray-300 focus:border-2 focus:border-gray-500 rounded px-2 py-1 w-96"
+          className="border border-gray-300 focus:border-2 focus:border-gray-500 rounded px-2 py-1 w-full"
         />
         {additionalSteps.length < 7 && (
           <button
@@ -75,7 +75,7 @@ const Step: React.FC<StepProps> = ({ type }) => {
       </div>
 
       {additionalSteps.map((input, index) => (
-        <AdditionalStep
+        <AndStep
           key={index}
           value={input}
           index={index}
@@ -89,4 +89,4 @@ const Step: React.FC<StepProps> = ({ type }) => {
   );
 };
 
-export default Step;
+export default Step; 

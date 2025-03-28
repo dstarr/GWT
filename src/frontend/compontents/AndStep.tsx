@@ -1,6 +1,6 @@
 import React from "react";
 
-interface AdditionalStepProps {
+interface AndStepProps {
   value: string;
   index: number;
   canAddMore: boolean;
@@ -9,7 +9,7 @@ interface AdditionalStepProps {
   onRemove: (index: number) => void;
 }
 
-const AdditionalStep: React.FC<AdditionalStepProps> = ({
+const AndStep: React.FC<AndStepProps> = ({
   value,
   index,
   canAddMore,
@@ -25,7 +25,7 @@ const AdditionalStep: React.FC<AdditionalStepProps> = ({
         value={value}
         onChange={(e) => onChange(index, e.target.value)}
         placeholder="Enter additional step text here..."
-        className="border border-gray-300 focus:border-2 focus:border-gray-500 rounded px-2 py-1 w-96"
+        className="border border-gray-300 focus:border-2 focus:border-gray-500 rounded px-2 py-1 w-full"
       />
       {canAddMore && (
         <button
@@ -74,4 +74,4 @@ const AdditionalStep: React.FC<AdditionalStepProps> = ({
   );
 };
 
-export default AdditionalStep;
+export default AndStep; 

@@ -1,21 +1,15 @@
-import './App.css'
-import Step from '../compontents/Step'
+import Feature from "../compontents/Feature";
 
 function App() {
-  
-  
   return (
-    <>
-      <div className="flex flex-col gap-4 h-screen items-center justify-center">
-        <div className="flex flex-col gap-4">
-          <h1>Feature</h1>
-          <Step type="Given" />
-          <Step type="When" />
-          <Step type="Then" />
+    <div className="container mx-auto p-4">
+      <div className="flex flex-col gap-4 justify-center items-center">
+        <div className="w-full py-4">
+          <Feature title="Feature Specification"/>
         </div>
       </div>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App; 
