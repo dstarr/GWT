@@ -8,8 +8,15 @@ interface FeatureProps {
   title?: string;
 }
 
+// Interface for storing rule data and validation status
+interface RuleData {
+  id: number;
+  isComplete: boolean;
+}
+
 const Feature: React.FC<FeatureProps> = () => {
   const [rules, setRules] = useState<number[]>([]);
+  const [rulesData, setRulesData] = useState<RuleData[]>([]);
   const [featureName, setFeatureName] = useState<string>("");
   const { darkMode } = useTheme();
 
@@ -17,12 +24,15 @@ const Feature: React.FC<FeatureProps> = () => {
   useEffect(() => {
     if (rules.length === 0) {
       setRules([0]);
+      setRulesData([{ id: 0, isComplete: false }]);
     }
   }, [rules.length]);
 
   const addRule = () => {
     if (rules.length < MAX_RULES) {
-      setRules([...rules, rules.length]);
+      const newId = rules.length;
+      setRules([...rules, newId]);
+      setRulesData([...rulesData, { id: newId, isComplete: false }]);
     }
   };
 
@@ -30,6 +40,7 @@ const Feature: React.FC<FeatureProps> = () => {
     // Prevent removing the last rule
     if (rules.length > 1) {
       setRules(rules.filter((_, i) => i !== index));
+      setRulesData(rulesData.filter((_, i) => i !== index));
     }
   };
 
@@ -37,6 +48,25 @@ const Feature: React.FC<FeatureProps> = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setFeatureName(event.target.value);
+  };
+
+  // Function to update the completion status of a rule
+  const updateRuleStatus = (ruleIndex: number, isComplete: boolean) => {
+    setRulesData(prevData => {
+      const newData = [...prevData];
+      if (newData[ruleIndex]) {
+        newData[ruleIndex].isComplete = isComplete;
+      }
+      return newData;
+    });
+  };
+
+  // Determine if the "Add Rule" button should be enabled
+  const isAddRuleEnabled = () => {
+    if (rules.length === 0) return true;
+    // Check if the last rule is complete
+    const lastRuleIndex = rules.length - 1;
+    return rulesData[lastRuleIndex]?.isComplete === true;
   };
 
   return (
@@ -66,6 +96,7 @@ const Feature: React.FC<FeatureProps> = () => {
               index={index}
               onRemove={removeRule}
               isRemovable={rules.length > 1}
+              onStatusChange={(isComplete) => updateRuleStatus(index, isComplete)}
             />
           ))}
         </div>
@@ -81,7 +112,10 @@ const Feature: React.FC<FeatureProps> = () => {
             <div className="ml-auto">
               <button
                 onClick={addRule}
-                className={`${darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} text-white px-4 py-2 rounded flex items-center gap-2 transition-colors duration-200`}
+                disabled={!isAddRuleEnabled()}
+                className={`${darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} 
+                ${!isAddRuleEnabled() ? 'opacity-50 cursor-not-allowed' : ''} 
+                text-white px-4 py-2 rounded flex items-center gap-2 transition-colors duration-200`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

@@ -8,27 +8,51 @@ interface RuleProps {
   index: number;
   onRemove: (index: number) => void;
   isRemovable?: boolean;
+  onStatusChange?: (isComplete: boolean) => void;
+}
+
+// Interface for storing scenario data and validation status
+interface ScenarioData {
+  id: number;
+  isComplete: boolean;
 }
 
 const Rule: React.FC<RuleProps> = ({ 
   index, 
   onRemove,
-  isRemovable = true 
+  isRemovable = true,
+  onStatusChange
 }) => {
   const [ruleName, setRuleName] = useState<string>("");
   const [scenarios, setScenarios] = useState<number[]>([]);
+  const [scenariosData, setScenariosData] = useState<ScenarioData[]>([]);
   const { darkMode } = useTheme();
 
   // Initialize with one scenario when the rule loads
   useEffect(() => {
     if (scenarios.length === 0) {
       setScenarios([0]);
+      setScenariosData([{ id: 0, isComplete: false }]);
     }
   }, []);
 
+  // Check if the rule is complete (rule name and at least one complete scenario)
+  useEffect(() => {
+    // Rule is complete if it has a name and at least one complete scenario
+    const hasName = ruleName.trim() !== "";
+    const hasCompleteScenario = scenariosData.some(scenario => scenario.isComplete);
+    const isComplete = hasName && hasCompleteScenario;
+
+    if (onStatusChange) {
+      onStatusChange(isComplete);
+    }
+  }, [ruleName, scenariosData, onStatusChange]);
+
   const addScenario = () => {
     if (scenarios.length < MAX_SCENARIOS) {
-      setScenarios([...scenarios, scenarios.length]);
+      const newId = scenarios.length;
+      setScenarios([...scenarios, newId]);
+      setScenariosData([...scenariosData, { id: newId, isComplete: false }]);
     }
   };
 
@@ -36,11 +60,31 @@ const Rule: React.FC<RuleProps> = ({
     // Prevent removing the last scenario
     if (scenarios.length > 1) {
       setScenarios(scenarios.filter((_, i) => i !== scenarioIndex));
+      setScenariosData(scenariosData.filter((_, i) => i !== scenarioIndex));
     }
   };
 
   const handleRuleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRuleName(event.target.value);
+  };
+
+  // Function to update the completion status of a scenario
+  const updateScenarioStatus = (scenarioIndex: number, isComplete: boolean) => {
+    setScenariosData(prevData => {
+      const newData = [...prevData];
+      if (newData[scenarioIndex]) {
+        newData[scenarioIndex].isComplete = isComplete;
+      }
+      return newData;
+    });
+  };
+
+  // Determine if the "Add Scenario" button should be enabled
+  const isAddScenarioEnabled = () => {
+    if (scenarios.length === 0) return true;
+    // Check if the last scenario is complete
+    const lastScenarioIndex = scenarios.length - 1;
+    return scenariosData[lastScenarioIndex]?.isComplete === true;
   };
 
   return (
@@ -88,6 +132,7 @@ const Rule: React.FC<RuleProps> = ({
             index={scenarioIndex}
             onRemove={removeScenario}
             isRemovable={scenarios.length > 1}
+            onStatusChange={(isComplete) => updateScenarioStatus(scenarioIndex, isComplete)}
           />
         ))}
       </div>
@@ -103,7 +148,10 @@ const Rule: React.FC<RuleProps> = ({
           <div className="ml-auto">
             <button
               onClick={addScenario}
-              className={`${darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} text-white px-4 py-2 rounded flex items-center gap-2 transition-colors duration-200`}
+              disabled={!isAddScenarioEnabled()}
+              className={`${darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} 
+              ${!isAddScenarioEnabled() ? 'opacity-50 cursor-not-allowed' : ''} 
+              text-white px-4 py-2 rounded flex items-center gap-2 transition-colors duration-200`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

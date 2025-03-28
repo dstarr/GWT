@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Step from "./Step";
 import { useTheme } from "../context/ThemeContext";
 
@@ -6,14 +6,54 @@ interface ScenarioProps {
   index: number;
   onRemove: (index: number) => void;
   isRemovable?: boolean;
+  onStatusChange?: (isComplete: boolean) => void;
+}
+
+interface StepData {
+  text: string;
+  additionalSteps: string[];
 }
 
 const Scenario: React.FC<ScenarioProps> = ({ 
   index, 
   onRemove,
-  isRemovable = true 
+  isRemovable = true,
+  onStatusChange
 }) => {
   const { darkMode } = useTheme();
+  const [steps, setSteps] = useState<{[key: string]: StepData}>({
+    Given: { text: "", additionalSteps: [] },
+    When: { text: "", additionalSteps: [] },
+    Then: { text: "", additionalSteps: [] }
+  });
+
+  // Check if all required fields are filled
+  useEffect(() => {
+    const isComplete = 
+      steps.Given.text.trim() !== "" && 
+      steps.When.text.trim() !== "" && 
+      steps.Then.text.trim() !== "";
+    
+    if (onStatusChange) {
+      onStatusChange(isComplete);
+    }
+  }, [steps, onStatusChange]);
+
+  // Update step data when inputs change
+  const handleStepChange = (type: string, text: string) => {
+    setSteps(prev => ({
+      ...prev,
+      [type]: { ...prev[type], text }
+    }));
+  };
+
+  // Update additional steps
+  const handleAdditionalStepsChange = (type: string, additionalSteps: string[]) => {
+    setSteps(prev => ({
+      ...prev,
+      [type]: { ...prev[type], additionalSteps }
+    }));
+  };
 
   return (
     <div className={`border ${darkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'} rounded-lg p-4 transition-colors duration-200`}>
@@ -42,9 +82,21 @@ const Scenario: React.FC<ScenarioProps> = ({
           </button>
         )}
       </div>
-      <Step type="Given" />
-      <Step type="When" />
-      <Step type="Then" />
+      <Step 
+        type="Given" 
+        onChange={(text) => handleStepChange("Given", text)}
+        onAdditionalStepsChange={(steps) => handleAdditionalStepsChange("Given", steps)}
+      />
+      <Step 
+        type="When" 
+        onChange={(text) => handleStepChange("When", text)}
+        onAdditionalStepsChange={(steps) => handleAdditionalStepsChange("When", steps)}
+      />
+      <Step 
+        type="Then" 
+        onChange={(text) => handleStepChange("Then", text)}
+        onAdditionalStepsChange={(steps) => handleAdditionalStepsChange("Then", steps)}
+      />
     </div>
   );
 };

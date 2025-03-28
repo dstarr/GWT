@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AndStep from "./AndStep";
 import { useTheme } from "../context/ThemeContext";
 
@@ -8,12 +8,28 @@ type StepType = "Given" | "When" | "Then";
 
 interface StepProps {
   type: StepType;
+  onChange?: (text: string) => void;
+  onAdditionalStepsChange?: (steps: string[]) => void;
 }
 
-const Step: React.FC<StepProps> = ({ type }) => {
+const Step: React.FC<StepProps> = ({ type, onChange, onAdditionalStepsChange }) => {
   const [text, setText] = useState<string>("");
   const [additionalSteps, setadditionalSteps] = useState<string[]>([]);
   const { darkMode } = useTheme();
+
+  // Report changes to parent component
+  useEffect(() => {
+    if (onChange) {
+      onChange(text);
+    }
+  }, [text, onChange]);
+
+  // Report additional steps changes to parent component
+  useEffect(() => {
+    if (onAdditionalStepsChange) {
+      onAdditionalStepsChange(additionalSteps);
+    }
+  }, [additionalSteps, onAdditionalStepsChange]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setText(event.target.value);
