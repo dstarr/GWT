@@ -70,6 +70,7 @@ const Step: React.FC<StepProps> = ({ type, onChange, onAdditionalStepsChange }) 
               value={text}
               onChange={handleChange}
               placeholder="Enter text here..."
+              maxLength={400}
               className={`border ${darkMode ? 'border-gray-600 bg-gray-700 focus:border-blue-400 placeholder-gray-400' : 'border-gray-300 bg-white focus:border-gray-500'} rounded px-2 py-1 w-full transition-colors duration-200`}
             />
           </div>

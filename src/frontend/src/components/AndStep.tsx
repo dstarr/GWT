@@ -22,13 +22,14 @@ const AndStep: React.FC<AndStepProps> = ({
 
   return (
     <div className="flex flex-row gap-2 items-center ml-4">
-      <span className={`step-type ${darkMode ? 'text-purple-400' : 'text-gray-600'}`}>And: </span>
+      <span className={`step-type ${darkMode ? 'text-green-400' : 'text-gray-600'}`}>And: </span>
       <div className="flex-grow">
         <input
           type="text"
           value={value}
           onChange={(e) => onChange(index, e.target.value)}
           placeholder="Enter additional step text here..."
+          maxLength={400}
           className={`border ${darkMode ? 'border-gray-600 bg-gray-700 focus:border-blue-400 placeholder-gray-400' : 'border-gray-300 bg-white focus:border-gray-500'} rounded px-2 py-1 w-full transition-colors duration-200`}
         />
       </div>

@@ -84,6 +84,7 @@ const Feature: React.FC<FeatureProps> = () => {
               value={featureName}
               onChange={handleFeatureNameChange}
               placeholder="Enter feature name..."
+              maxLength={400}
               className={`border ${darkMode ? 'border-gray-600 bg-gray-700 focus:border-blue-400 placeholder-gray-400' : 'border-gray-300 bg-white focus:border-blue-500 placeholder-gray-500'} focus:ring-1 focus:ring-blue-500 rounded px-3 py-2 w-full transition-colors duration-200`}
             />
           </div>
