@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import AndStep from "./AndStep";
 
+const MAX_ADDITIONAL_STEPS = 7;
+
 type StepType = "Given" | "When" | "Then";
 
 interface StepProps {
@@ -22,7 +24,7 @@ const Step: React.FC<StepProps> = ({ type }) => {
   };
 
   const addAdditionalStep = (index?: number) => {
-    if (additionalSteps.length < 7) {
+    if (additionalSteps.length < MAX_ADDITIONAL_STEPS) {
       if (index !== undefined) {
         // Insert at specific position
         const newInputs = [...additionalSteps];
@@ -43,17 +45,19 @@ const Step: React.FC<StepProps> = ({ type }) => {
     <div className="flex flex-col gap-2">
       <div className="flex flex-row gap-2 items-center w-full">
         <span className="step-type">{type}: </span>
-        <input
-          type="text"
-          value={text}
-          onChange={handleChange}
-          placeholder="Enter text here..."
-          className="border border-gray-300 focus:border-2 focus:border-gray-500 rounded px-2 py-1 w-full"
-        />
-        {additionalSteps.length < 7 && (
+        <div className="flex-grow">
+          <input
+            type="text"
+            value={text}
+            onChange={handleChange}
+            placeholder="Enter text here..."
+            className="border border-gray-300 focus:border-2 focus:border-gray-500 rounded px-2 py-1 w-full"
+          />
+        </div>
+        {additionalSteps.length < MAX_ADDITIONAL_STEPS && (
           <button
             onClick={() => addAdditionalStep()}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-500 hover:text-gray-700 ml-2"
             title="Add And clause"
           >
             <svg
@@ -79,12 +83,18 @@ const Step: React.FC<StepProps> = ({ type }) => {
           key={index}
           value={input}
           index={index}
-          canAddMore={additionalSteps.length < 7}
+          canAddMore={additionalSteps.length < MAX_ADDITIONAL_STEPS}
           onChange={handleAdditionalStepChange}
           onAdd={addAdditionalStep}
           onRemove={removeAdditionalStep}
         />
       ))}
+      
+      {additionalSteps.length > 0 && (
+        <div className="text-right text-xs text-gray-500">
+          {additionalSteps.length} of {MAX_ADDITIONAL_STEPS} additional steps
+        </div>
+      )}
     </div>
   );
 };

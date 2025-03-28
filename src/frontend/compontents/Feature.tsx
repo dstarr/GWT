@@ -1,31 +1,33 @@
 import React, { useState, useEffect } from "react";
-import Scenario from "./Scenario";
+import Rule from "./Rule";
+
+const MAX_RULES = 10;
 
 interface FeatureProps {
   title?: string;
 }
 
 const Feature: React.FC<FeatureProps> = ({ title = "Feature" }) => {
-  const [scenarios, setScenarios] = useState<number[]>([]);
+  const [rules, setRules] = useState<number[]>([]);
   const [featureName, setFeatureName] = useState<string>("");
 
-  // Initialize with one scenario when the feature loads
+  // Initialize with one rule when the feature loads
   useEffect(() => {
-    if (scenarios.length === 0) {
-      setScenarios([0]);
+    if (rules.length === 0) {
+      setRules([0]);
     }
-  }, [scenarios.length]);
+  }, [rules.length]);
 
-  const addScenario = () => {
-    if (scenarios.length < 20) {
-      setScenarios([...scenarios, scenarios.length]);
+  const addRule = () => {
+    if (rules.length < MAX_RULES) {
+      setRules([...rules, rules.length]);
     }
   };
 
-  const removeScenario = (index: number) => {
-    // Prevent removing the last scenario
-    if (scenarios.length > 1) {
-      setScenarios(scenarios.filter((_, i) => i !== index));
+  const removeRule = (index: number) => {
+    // Prevent removing the last rule
+    if (rules.length > 1) {
+      setRules(rules.filter((_, i) => i !== index));
     }
   };
 
@@ -51,40 +53,48 @@ const Feature: React.FC<FeatureProps> = ({ title = "Feature" }) => {
       </div>
       
       <div className="flex flex-col gap-4">
-        {scenarios.map((_, index) => (
-          <Scenario
+        {rules.map((_, index) => (
+          <Rule
             key={index}
             index={index}
-            onRemove={removeScenario}
-            isRemovable={scenarios.length > 1}
+            onRemove={removeRule}
+            isRemovable={rules.length > 1}
           />
         ))}
       </div>
 
-      {scenarios.length < 20 && (
-        <div className="flex justify-center mt-6">
-          <button
-            onClick={addScenario}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+      <div className="flex justify-between items-center mt-4">
+        {rules.length > 0 && (
+          <div className="text-sm text-gray-500">
+            {rules.length} of {MAX_RULES} rules
+          </div>
+        )}
+
+        {rules.length < MAX_RULES && (
+          <div className="ml-auto">
+            <button
+              onClick={addRule}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2"
             >
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-            Add Scenario
-          </button>
-        </div>
-      )}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Add Rule
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
